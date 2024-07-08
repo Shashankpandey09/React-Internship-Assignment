@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import UserForm from './components/UserForn';
+import UserForm from './components/UserForn'; // Corrected typo in import
 import SecondPage from './components/SecondPage';
 
 const App: React.FC = () => {
-  const user = localStorage.getItem('user');
+  const user = JSON.parse(localStorage.getItem('userDetails') || '{}'); // Retrieve and parse user details
 
   return (
     <Router>
@@ -12,7 +12,7 @@ const App: React.FC = () => {
         <Route path="/" element={<UserForm />} />
         <Route
           path="/second"
-          element={user ? <SecondPage /> : <Navigate to="/" replace />}
+          element={user.name ? <SecondPage /> : <Navigate to="/" replace />} // Check if user.name exists
         />
       </Routes>
     </Router>
@@ -20,3 +20,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
