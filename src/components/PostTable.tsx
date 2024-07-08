@@ -35,8 +35,12 @@ const PostTable: React.FC = () => {
         <DataGrid
           rows={posts}
           columns={columns}
-          autoPageSize
-          pagination
+         
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 25, page: 0 },
+            },
+          }}
         />
       </div>
     </Container>

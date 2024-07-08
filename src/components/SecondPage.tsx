@@ -11,6 +11,7 @@ const SecondPage: React.FC = () => {
         const userDetails = localStorage.getItem('userDetails');
         if (!userDetails) {
           // Redirect back to the first page if details are not found
+        
           navigate('/');
         }
       }, []);
