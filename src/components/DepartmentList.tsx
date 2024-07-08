@@ -52,25 +52,29 @@ const DepartmentHierarchy: React.FC = () => {
       const department = departmentHierarchy.find(d => d.department === (sub ? name.split('-')[0] : name));
       if (!department) return prev;
   
-      const updatedSelected: Record<string, boolean> = {};
+      const updatedSelected: Record<string, boolean> = { ...prev };
   
       if (!sub) {
         // Toggle main department selection
-        const allSubSelected = department.sub_departments.every(sd => selected[`${name}-${sd}`]);
+        const allSubSelected = department.sub_departments.every(sd => updatedSelected[`${name}-${sd}`]);
         updatedSelected[name] = !allSubSelected;
         department.sub_departments.forEach(sd => {
           updatedSelected[`${name}-${sd}`] = !allSubSelected;
         });
       } else {
         // Toggle sub-department selection
-        updatedSelected[name] = !prev[name];
+        updatedSelected[name] = !updatedSelected[name];
+  
+        // Check if all sub-departments are selected
         const allSelected = department.sub_departments.every(sd => updatedSelected[`${department.department}-${sd}`]);
         updatedSelected[department.department] = allSelected;
       }
   
-      return { ...prev, ...updatedSelected };
+      return updatedSelected;
     });
   };
+  
+  
   
 
   return (
