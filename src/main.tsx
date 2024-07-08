@@ -8,7 +8,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 const theme = createTheme();
 const container = document.getElementById('root');
 
-// Ensure the container exists before calling createRoot
 if (container) {
   const root = createRoot(container);
 
