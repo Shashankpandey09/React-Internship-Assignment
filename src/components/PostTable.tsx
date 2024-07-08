@@ -12,21 +12,12 @@ interface Post {
 
 const PostTable: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [pageSize, setPageSize] = useState<number>(5);
 
   useEffect(() => {
-    fetchData();
+    axios.get('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => setPosts(response.data))
+      .catch((error) => console.error(error));
   }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      // Handle error: show user feedback, retry logic, etc.
-    }
-  };
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -41,12 +32,11 @@ const PostTable: React.FC = () => {
         Posts
       </Typography>
       <div style={{ height: 400, width: '100%' }}>
-        <DataGrid 
-          rows={posts} 
-          columns={columns} 
-          pageSize={pageSize} 
-          rowsPerPageOptions={[5, 10, 15]} 
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)} 
+        <DataGrid
+          rows={posts}
+          columns={columns}
+          autoPageSize
+          rowsPerPageOptions={[5, 10, 15] as const}
           pagination
         />
       </div>
@@ -55,4 +45,3 @@ const PostTable: React.FC = () => {
 };
 
 export default PostTable;
-
