@@ -1,32 +1,58 @@
 import React, { useState } from 'react';
-import { Checkbox, IconButton, List, ListItem, ListItemIcon, ListItemText, Collapse } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Typography, Accordion, AccordionSummary, AccordionDetails, Checkbox, FormControlLabel, Box } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const departments = [
+// Hardcoded department hierarchy data
+const departmentHierarchy = [
   {
-    name: "Department A",
-    subDepartments: ["Sub A1", "Sub A2", "Sub A3"]
+    department: 'Customer Service',
+    sub_departments: ['Support', 'Customer Success']
   },
   {
-    name: "Department B",
-    subDepartments: ["Sub B1", "Sub B2"]
-  }
+    department: 'Design',
+    sub_departments: ['Graphic Design', 'Product Design', 'Web Design']
+  },
+  {
+    department: 'Agriculture & Fishing',
+    sub_departments: ['Crop Farming', 'Livestock Farming', 'Fishing']
+  },
+  {
+    department: 'Business Services',
+    sub_departments: ['Consulting', 'Legal Services', 'Marketing']
+  },
+  {
+    department: 'Education',
+    sub_departments: ['Primary Education', 'Secondary Education', 'Higher Education']
+  },
+  {
+    department: 'Healthcare',
+    sub_departments: ['Hospitals', 'Medical Clinics', 'Dental Services']
+  },
+  {
+    department: 'Technology',
+    sub_departments: ['Software Development', 'Information Technology', 'Electronics']
+  },
+  {
+    department: 'Finance',
+    sub_departments: ['Banking', 'Investment Management', 'Insurance']
+  },
 ];
 
-const DepartmentList: React.FC = () => {
-  const [open, setOpen] = useState<{ [key: string]: boolean }>({});
-  const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
+// TypeScript interfaces
+interface DepartmentHierarchyItem {
+  department: string;
+  sub_departments: string[];
+}
 
-  const handleClick = (name: string) => {
-    setOpen(prev => ({ ...prev, [name]: !prev[name] }));
-  };
+const DepartmentHierarchy: React.FC = () => {
+  const [selected, setSelected] = useState<Record<string, boolean>>({});
 
   const handleSelect = (name: string, sub: boolean = false) => {
     if (!sub) {
-      const allSubSelected = departments.find(d => d.name === name)?.subDepartments.every(sd => selected[`${name}-${sd}`]);
+      const allSubSelected = departmentHierarchy.find(d => d.department === name)?.sub_departments.every(sd => selected[`${name}-${sd}`]);
       setSelected(prev => {
         const newSelected = { ...prev, [name]: !allSubSelected };
-        departments.find(d => d.name === name)?.subDepartments.forEach(sd => {
+        departmentHierarchy.find(d => d.department === name)?.sub_departments.forEach(sd => {
           newSelected[`${name}-${sd}`] = !allSubSelected;
         });
         return newSelected;
@@ -35,7 +61,7 @@ const DepartmentList: React.FC = () => {
       setSelected(prev => {
         const newSelected = { ...prev, [name]: !prev[name] };
         const departmentName = name.split('-')[0];
-        const allSubSelected = departments.find(d => d.name === departmentName)?.subDepartments.every(sd => newSelected[`${departmentName}-${sd}`]);
+        const allSubSelected = departmentHierarchy.find(d => d.department === departmentName)?.sub_departments.every(sd => newSelected[`${departmentName}-${sd}`]);
         newSelected[departmentName] = allSubSelected;
         return newSelected;
       });
@@ -43,46 +69,40 @@ const DepartmentList: React.FC = () => {
   };
 
   return (
-    <List>
-      {departments.map((department) => (
-        <div key={department.name}>
-          <ListItem button onClick={() => handleClick(department.name)}>
-            <ListItemIcon>
-              <Checkbox
-                edge="start"
-                checked={selected[department.name] || false}
-                tabIndex={-1}
-                disableRipple
-                inputProps={{ 'aria-labelledby': department.name }}
-                onClick={(e) => { e.stopPropagation(); handleSelect(department.name); }}
-              />
-            </ListItemIcon>
-            <ListItemText primary={department.name} />
-            {open[department.name] ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={open[department.name]} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {department.subDepartments.map((sub) => (
-                <ListItem key={sub} button sx={{ pl: 4 }}>
-                  <ListItemIcon>
+    <div style={{ marginTop: '20px' }}>
+      {departmentHierarchy.map((dept: DepartmentHierarchyItem) => (
+        <Accordion key={dept.department}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selected[dept.department] || false}
+                  onChange={() => handleSelect(dept.department)}
+                />
+              }
+              label={<Typography variant="subtitle1">{dept.department}</Typography>}
+            />
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box ml={2}>
+              {dept.sub_departments.map((subDept: string) => (
+                <FormControlLabel
+                  key={`${dept.department}-${subDept}`}
+                  control={
                     <Checkbox
-                      edge="start"
-                      checked={selected[`${department.name}-${sub}`] || false}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ 'aria-labelledby': sub }}
-                      onClick={(e) => { e.stopPropagation(); handleSelect(`${department.name}-${sub}`, true); }}
+                      checked={selected[`${dept.department}-${subDept}`] || false}
+                      onChange={() => handleSelect(`${dept.department}-${subDept}`, true)}
                     />
-                  </ListItemIcon>
-                  <ListItemText primary={sub} />
-                </ListItem>
+                  }
+                  label={subDept}
+                />
               ))}
-            </List>
-          </Collapse>
-        </div>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
       ))}
-    </List>
+    </div>
   );
 };
 
-export default DepartmentList;
+export default DepartmentHierarchy;
