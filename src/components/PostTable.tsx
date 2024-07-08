@@ -36,7 +36,6 @@ const PostTable: React.FC = () => {
           rows={posts}
           columns={columns}
           autoPageSize
-          rowsPerPageOptions={[5, 10, 15] as const}
           pagination
         />
       </div>
