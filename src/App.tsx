@@ -4,7 +4,7 @@ import UserForm from './components/UserForn'; // Corrected typo in import
 import SecondPage from './components/SecondPage';
 
 const App: React.FC = () => {
-  const user = JSON.parse(localStorage.getItem('userDetails') || '{}'); // Retrieve and parse user details
+ // Retrieve and parse user details
 
   return (
     <Router>
@@ -12,7 +12,7 @@ const App: React.FC = () => {
         <Route path="/" element={<UserForm />} />
         <Route
           path="/second"
-          element={user.name ? <SecondPage /> : <Navigate to="/" replace />} // Check if user.name exists
+          element={ <SecondPage /> } // Check if user.name exists
         />
       </Routes>
     </Router>

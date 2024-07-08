@@ -4,6 +4,7 @@ import PostTable from './PostTable';
 import DepartmentList from './DepartmentList';
 
 const SecondPage: React.FC = () => {
+  
     useEffect(() => {
         // Check if user details are in localStorage
         const userDetails = localStorage.getItem('userDetails');
